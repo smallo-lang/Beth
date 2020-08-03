@@ -63,6 +63,9 @@ or val val var
 @ labels
 jump_location:
 
+@ includes
+>"func.so"
+
 @ control flow
 jump *      @ unconditional jump
 jmpt val *  @ jump if val is true

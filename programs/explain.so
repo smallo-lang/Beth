@@ -1,0 +1,10 @@
+start:
+  put 0 i
+  put "hello world" s
+
+  out i
+  out s
+
+  jump start
+
+  end

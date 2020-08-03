@@ -1,7 +1,10 @@
 import sys
 
-import stack
+from stack import Stack
 import util
+import loader
+from preprocessor import Preprocessor
+
 
 class VM:
     def __init__(self):
@@ -13,35 +16,20 @@ class VM:
         self.labels = {}
         self.instructions = []
         self.variables = []
-        self.returns = stack.Stack()
-        self.opcodes = {
+        self.returns = Stack()
         #   'opc': (fn pointer, operand length)
+        self.opcodes = {
             'end': (self._end_, 0),
         }
 
     def boot(self, src):
-        code = self._load(src)
-        self._preprocess(code)
+        code = loader.load(src)
+        self.labels, self.instructions = Preprocessor().preprocess(code)
         self._run()
 
     def _run(self):
         while True:
             self._tick()
-
-    """ Must not mutate self! """
-    def _load(self, src):
-        pass
-
-    def _preprocess(self, code):
-        if self._has_label_duplicates(code):
-            util.err('label duplicates detected')
-
-        # compose self.labels
-        
-        self.instructions = code    # temp
-
-    def _has_label_duplicates(self, code):
-        return False
 
     def _tick(self):
         self._fetch()

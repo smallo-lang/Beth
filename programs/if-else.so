@@ -1,0 +1,11 @@
+  inn age
+
+  lth age 18 b  @ check if age < 18
+  jmpf b else   @ if it isn't, branch into else
+
+  out "You're a minor"
+
+else:
+  out "You're good to go"
+
+  end

@@ -1,0 +1,9 @@
+  inn age
+
+  lth age 18 b  @ check if age < 18
+  jmpf b exit   @ if it isn't, exit
+
+  out "You're a minor"
+
+exit:
+  end
