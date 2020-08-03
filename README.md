@@ -100,11 +100,8 @@ end         @ exit program
 The loader is supposed to 
 
 1. Read input file(s);
-2. Clean the code of redundant data (e.g. empty lines);
+2. Clean the code of redundant data (e.g. empty lines, comments, whitespace);
 3. Pass it onto the [preprocessor](preprocessor).
-
-> Loader must also check for duplicated labels and raise syntax error in case
-> duplicates have been detected.
 
 
 ### <a name="preprocessor"></a> Preprocessor
@@ -116,7 +113,11 @@ The preprocessor is supposed to
 3. Compose the label map;
 4. Compile the instructions list.
 
-> Learn more about internals like label map below.
+
+> Preprocessor must also check for duplicated labels and raise syntax error in
+> case duplicates have been detected.
+
+Learn more about internals like label map below.
 
 
 ### Internals
@@ -129,9 +130,10 @@ The VM contains the following internal structures:
 2. Instructions list;
 3. Variable map;
 4. Return locations stack;
-5. Instructions map.
+5. Opcodes map.
 
-> Instructions methods are to be named with an \_underscore prefix.
+> Opcode methods are to be surrounded with `_underscores_` which will separate
+> them visually from the rest of internal VM methods.
 
 #### Methods
 

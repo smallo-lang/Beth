@@ -3,7 +3,7 @@ import sys
 from stack import Stack
 import util
 import loader
-from preprocessor import Preprocessor
+from prep import Preprocessor
 
 
 class VM:
@@ -19,13 +19,24 @@ class VM:
         self.returns = Stack()
         #   'opc': (fn pointer, operand length)
         self.opcodes = {
+            'err': (self._err_, 2),
             'end': (self._end_, 0),
         }
 
     def boot(self, src):
         code = loader.load(src)
-        self.labels, self.instructions = Preprocessor().preprocess(code)
+        self._preprocess(code)
         self._run()
+
+    def _preprocess(self, code):
+        pre = Preprocessor()
+        pre.process(code)
+
+        if pre.err:
+            util.err('preprocessing error (try checking for duplicate labels)')
+
+        self.instructions = pre.instructions
+        self.labels = pre.labels
 
     def _run(self):
         while True:
@@ -51,7 +62,7 @@ class VM:
         if self.opcode not in self.opcodes:
             self._invalidate('unknown instruction', 1)
         
-        expected_operand_length = self.opcodes[self.opcode][1]
+        _, expected_operand_length = self.opcodes[self.opcode]
         if len(self.operand) != expected_operand_length:
             self._invalidate('incorrect operand length', 1)
 
@@ -60,7 +71,7 @@ class VM:
         self.operand = (error_message, exit_code)
 
     def _exec(self):
-        opcode_method = self.opcodes[self.opcode][0]
+        opcode_method, _ = self.opcodes[self.opcode]
         opcode_method(self.operand)
 
     # instruction set
@@ -71,6 +82,7 @@ class VM:
 
     def _end_(self, operand):
         sys.exit(0)
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
