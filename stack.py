@@ -15,7 +15,7 @@ class Stack:
         self.mem.append(item)
 
     def pop(self):
-        return self.pop(-1)
+        return self.mem.pop(-1)
 
     def peek(self):
         return self.mem[-1]

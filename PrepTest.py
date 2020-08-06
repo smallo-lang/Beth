@@ -1,9 +1,9 @@
-import unittest
+from unittest import TestCase
 
 from prep import Preprocessor
 
 
-class PrepTest(unittest.TestCase):
+class PrepTest(TestCase):
     def setUp(self) -> None:
         self.pre = Preprocessor()
 

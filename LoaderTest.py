@@ -1,10 +1,10 @@
-import unittest
+from unittest import TestCase
 import os
 
 import loader
 
 
-class LoaderTest(unittest.TestCase):
+class LoaderTest(TestCase):
     def test_cleans_lines_around_clean_line(self):
         self._write_to_test_file('\t\ninn n\n   \n')
         clean_lines = self._load()
