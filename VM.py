@@ -1,9 +1,6 @@
 import sys
 
-from stack import Stack
-import util
-import Loader
-from Preprocessor import Preprocessor
+from Stack import Stack
 from Parser import Parser
 
 
