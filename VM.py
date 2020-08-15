@@ -2,12 +2,13 @@ import sys
 
 from stack import Stack
 import util
-import loader
-from prep import Preprocessor
+import Loader
+from Preprocessor import Preprocessor
+from Parser import Parser
 
 
 class VM:
-    def __init__(self, instructions, labels):
+    def __init__(self, instructions=[], labels={}):
         self.ip = 0
         self.instruction = ''
         self.opcode = ''
@@ -17,17 +18,31 @@ class VM:
         self.labels = labels
         self.variables = {}
         self.call = Stack()
+
+        self.run = True
+        self.err = ''
+        self.exit_code = 0
+
         #   'opc': (fn pointer, operand length)
         self.opcodes = {
+            'put': (self._put_, 2),
             'err': (self._err_, 2),
             'end': (self._end_, 0),
         }
 
     def boot(self):
-        while True:
-            self.fetch()
-            self.decode()
-            self.exec()
+        while self.run and not self.err:
+            self.tick()
+
+        if self.err:
+            print(f'Error: {self.err}')
+
+        sys.exit(self.exit_code)
+
+    def tick(self):
+        self.fetch()
+        self.decode()
+        self.exec()
 
     def fetch(self):
         self.instruction = self.instructions[self.ip]
@@ -37,8 +52,10 @@ class VM:
         self._validate()
 
     def _parse(self):
-        self.opcode = self.instruction  # temp
-        self.operand = ()               # temp
+        parser = Parser(self.instruction)
+        parser.parse()
+        self.opcode = parser.opcode
+        self.operand = parser.operand
 
     def _validate(self):
         if self.opcode not in self.opcodes:
@@ -57,10 +74,12 @@ class VM:
         opcode_method(self.operand)
 
     """ Instruction set methods follow. """
+    def _put_(self, operand):
+        val, var = operand
+        self.variables[var] = val
+
     def _err_(self, operand):
-        error_message, exit_code = operand
-        print(f'Error: {error_message}')
-        sys.exit(exit_code)
+        self.err, self.exit_code = operand
 
     def _end_(self, operand):
-        sys.exit(0)
+        self.run = False

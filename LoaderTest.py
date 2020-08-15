@@ -1,7 +1,7 @@
 from unittest import TestCase
 import os
 
-import loader
+import Loader
 
 
 class LoaderTest(TestCase):
@@ -25,4 +25,4 @@ class LoaderTest(TestCase):
 
     @staticmethod
     def _load():
-        return loader.load('test.so')
+        return Loader.load('test.so')

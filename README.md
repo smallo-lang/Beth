@@ -6,7 +6,7 @@ Simple syntax. Infinite opportunities.
 
 ## Type System
 
-SmallO supports two simple types: `number` and `string` where `number` also
+SmallO supports two simple types: `integer` and `string` where `integer` also
 serves as `boolean`. The `string` type can be interpreted as `boolean` using its
 length (empty `string` gives `false`, non-empty one gives `true`).
 
@@ -29,31 +29,31 @@ take up to 3 operands (normally two values and a variable to store the result).
 @ assignment
 put val var
 
-@ binary numerical operations
+@ binary integer operations
     @ arithmetic
-add num num var
-sub num num var
-mul num num var
-div num num var
-mod num num var
+add int int var
+sub int int var
+mul int int var
+div int int var
+mod int int var
     @ comparisons
-gth num num var @ greater than
-lth num num var @ less than
-geq num num var @ greater than or equal to
-leq num num var @ less than or equal to
+gth int int var @ greater than
+lth int int var @ less than
+geq int int var @ greater than or equal to
+leq int int var @ less than or equal to
 
 @ binary general operations
 eq val val var  @ equality check (type-crytical)
 neq val val var @ inequality check (type-crytical)
 
 @ I/O operations
-inn var     @ input number (type-crytical)
+inn var     @ input integer (type-crytical)
 ins var     @ input string (type-crytical)
 out val     @ output value (type-blind)
 
 @ string operations
 con val val var @ concatenate 2 values as strings (type-blind)
-stn val var @ string-to-number conversion (type-blind)
+sti val var @ string-to-integer conversion (type-blind)
 
 @ boolean operations
 not val var
@@ -71,7 +71,7 @@ jump *      @ unconditional jump
 jmpt val *  @ jump if val is true
 jmpf val *  @ jump if val is false
 back        @ return to previous branch point
-err val num @ exit program with error message (type-blind) and exit code num
+err val int @ exit program with error message (type-blind) and exit code int
 end         @ exit program
 ```
 
@@ -80,10 +80,10 @@ end         @ exit program
 
 | Symbol | Meaning             |
 |:------:|:--------------------|
-| #      | number literal      |
+| #      | integer literal     |
 | $      | string literal      |
 | var    | variable identifier |
-| num    | number (# or var)   |
+| int    | integer (# or var)  |
 | val    | value               |
 | *      | label identifier    |
 | @      | comment             |
