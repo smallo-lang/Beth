@@ -96,6 +96,51 @@ class VMTest(TestCase):
         with capture(self.vm.tick) as output:
             self.assertEquals('hello world\n', output)
 
+    def test_jump_(self):
+        self.vm.instructions = ['put 0 i', 'add i 1 i', 'jump start']
+        self.vm.names = {'start': 1}
+        self.vm.tick()  # i = 0
+        for i in range(3):
+            self._assert_name_equals(i, 'i')
+            self.vm.tick()  # i += 1
+            self.vm.tick()  # jump start
+
+    def test_jmpt_(self):
+        self.vm.instructions = [
+            'put 0 i',
+            'jmpt i exit',  # no jump!
+            'put 42 a',     # should be set to 42
+            'put 1 i',
+            'jmpt i exit',  # jump!
+            'put 0 b',      # unreachable
+            'end'
+        ]
+        self.vm.names = {'exit': 6}
+        for i in range(3):
+            self.vm.tick()
+        self._assert_name_equals(42, 'a')
+        for i in range(3):
+            self.vm.tick()
+        self.assertTrue('b' not in self.vm.names)
+
+    def test_jmpf_(self):
+        self.vm.instructions = [
+            'put 1 i',
+            'jmpf i exit',  # no jump!
+            'put 42 a',     # should be set to 42
+            'put 0 i',
+            'jmpf i exit',  # jump!
+            'put 0 b',      # unreachable
+            'end'
+        ]
+        self.vm.names = {'exit': 6}
+        for i in range(3):
+            self.vm.tick()
+        self._assert_name_equals(42, 'a')
+        for i in range(3):
+            self.vm.tick()
+        self.assertTrue('b' not in self.vm.names)
+
     def test_err_(self):
         self.vm.instructions = ['err "just an error message" 1']
         self.vm.tick()

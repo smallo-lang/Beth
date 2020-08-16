@@ -33,6 +33,9 @@ class VM:
             'ins': (self._ins_, 1),
             'out': (self._out_, 1),
 
+            'jump': (self._jump_, 1),
+            'jmpt': (self._jmpt_, 2),
+            'jmpf': (self._jmpf_, 2),
             'err': (self._err_, 2),
             'end': (self._end_, 0),
         }
@@ -183,6 +186,24 @@ class VM:
         print(self._eval_value(operand[0]))
 
     """ Control flow. """
+    def _jump_(self, operand):
+        location = self._eval_name(operand[0])
+        self.ip = location
+
+    def _jmpt_(self, operand):
+        var, location = operand
+        var = self._eval_name(var)
+        location = self._eval_name(location)
+        if var:
+            self.ip = location
+
+    def _jmpf_(self, operand):
+        var, location = operand
+        var = self._eval_name(var)
+        location = self._eval_name(location)
+        if not var:
+            self.ip = location
+
     def _err_(self, operand):
         err, exit_code = operand
         self.err = self._eval_value(err)

@@ -68,8 +68,8 @@ jump_location:
 
 @ control flow
 jump *      @ unconditional jump
-jmpt val *  @ jump if val is true (type-blind)
-jmpf val *  @ jump if val is false (type-blind)
+jmpt var *  @ jump if val is true (type-blind)
+jmpf var *  @ jump if val is false (type-blind)
 back        @ return to previous branch point
 err val #   @ exit program with error message (type-blind) and exit code int
 end         @ exit program
