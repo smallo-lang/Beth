@@ -29,6 +29,14 @@ class VM:
             'div': (self._div_, 3),
             'mod': (self._mod_, 3),
 
+            'gth': (self._gth_, 3),
+            'lth': (self._lth_, 3),
+            'geq': (self._geq_, 3),
+            'leq': (self._leq_, 3),
+
+            'eq': (self._eq_, 3),
+            'neq': (self._neq_, 3),
+
             'ini': (self._ini_, 1),
             'ins': (self._ins_, 1),
             'out': (self._out_, 1),
@@ -137,6 +145,13 @@ class VM:
         var = self._eval_variable(var)
         return x, y, var
 
+    def _binary_value_unpack(self, operand):
+        x, y, var = operand
+        x = self._eval_value(x)
+        y = self._eval_value(y)
+        var = self._eval_variable(var)
+        return x, y, var
+
     def _store_name(self, name, value):
         self.names[name] = value
 
@@ -149,7 +164,7 @@ class VM:
         var = self._eval_variable(var)
         self._store_name(var, val)
 
-    """ Binary integer operations. """
+    """ Binary integer arithmetic operations. """
     def _add_(self, operand):
         x, y, var = self._binary_integer_unpack(operand)
         self._store_name(var, x + y)
@@ -169,6 +184,32 @@ class VM:
     def _mod_(self, operand):
         x, y, var = self._binary_integer_unpack(operand)
         self._store_name(var, x % y)
+
+    """ Binary integer comparisons. """
+    def _gth_(self, operand):
+        x, y, var = self._binary_integer_unpack(operand)
+        self._store_name(var, int(x > y))
+
+    def _lth_(self, operand):
+        x, y, var = self._binary_integer_unpack(operand)
+        self._store_name(var, int(x < y))
+
+    def _geq_(self, operand):
+        x, y, var = self._binary_integer_unpack(operand)
+        self._store_name(var, int(x >= y))
+
+    def _leq_(self, operand):
+        x, y, var = self._binary_integer_unpack(operand)
+        self._store_name(var, int(x <= y))
+
+    """ Binary general exact comparisons. """
+    def _eq_(self, operand):
+        x, y, var = self._binary_value_unpack(operand)
+        self._store_name(var, int(x == y))
+
+    def _neq_(self, operand):
+        x, y, var = self._binary_value_unpack(operand)
+        self._store_name(var, int(x != y))
 
     """ I/O operations. """
     def _ini_(self, operand):

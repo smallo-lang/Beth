@@ -76,6 +76,108 @@ class VMTest(TestCase):
         self.vm.tick()
         self._assert_name_equals(0, 'other')
 
+    def test_gth_(self):
+        self.vm.instructions = [
+            'gth 1 2 false',
+            'gth 2 1 true',
+            'put 42 a',
+            'put 42 b',
+            'gth a b f',
+            'end'
+        ]
+        self.vm.tick()
+        self._assert_name_equals(0, 'false')
+        self.vm.tick()
+        self._assert_name_equals(1, 'true')
+        for i in range(3):
+            self.vm.tick()
+        self._assert_name_equals(0, 'f')
+
+    def test_lth_(self):
+        self.vm.instructions = [
+            'lth 1 2 true',
+            'lth 2 1 false',
+            'put 42 a',
+            'put 42 b',
+            'lth a b f',
+            'end'
+        ]
+        self.vm.tick()
+        self._assert_name_equals(1, 'true')
+        self.vm.tick()
+        self._assert_name_equals(0, 'false')
+        for i in range(3):
+            self.vm.tick()
+        self._assert_name_equals(0, 'f')
+
+    def test_geq_(self):
+        self.vm.instructions = [
+            'geq 1 2 false',
+            'geq 2 1 true',
+            'put 42 a',
+            'put 42 b',
+            'geq a b t',
+            'end'
+        ]
+        self.vm.tick()
+        self._assert_name_equals(0, 'false')
+        self.vm.tick()
+        self._assert_name_equals(1, 'true')
+        for i in range(3):
+            self.vm.tick()
+        self._assert_name_equals(1, 't')
+
+    def test_leq_(self):
+        self.vm.instructions = [
+            'leq 1 2 true',
+            'leq 2 1 false',
+            'put 42 a',
+            'put 42 b',
+            'leq a b t',
+            'end'
+        ]
+        self.vm.tick()
+        self._assert_name_equals(1, 'true')
+        self.vm.tick()
+        self._assert_name_equals(0, 'false')
+        for i in range(3):
+            self.vm.tick()
+        self._assert_name_equals(1, 't')
+
+    def test_eq_(self):
+        self.vm.instructions = [
+            'eq 1 1 true',
+            'eq 1 2 false',
+            'put "hi" a',
+            'put "bye" b',
+            'eq a b f',
+            'end'
+        ]
+        self.vm.tick()
+        self._assert_name_equals(1, 'true')
+        self.vm.tick()
+        self._assert_name_equals(0, 'false')
+        for i in range(3):
+            self.vm.tick()
+        self._assert_name_equals(0, 'f')
+
+    def test_neq_(self):
+        self.vm.instructions = [
+            'neq 1 1 false',
+            'neq 1 2 true',
+            'put "hi" a',
+            'put "bye" b',
+            'neq a b t',
+            'end'
+        ]
+        self.vm.tick()
+        self._assert_name_equals(0, 'false')
+        self.vm.tick()
+        self._assert_name_equals(1, 'true')
+        for i in range(3):
+            self.vm.tick()
+        self._assert_name_equals(1, 't')
+
     def test_ini_(self):
         self.vm.instructions = ['ini magic', 'ini wrong']
         with mock.patch('builtins.input', return_value='42'):
