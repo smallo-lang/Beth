@@ -70,11 +70,11 @@ class VM:
 
     def _validate(self):
         if self.opcode not in self.opcodes:
-            self._invalidate('unknown opcode')
+            self._invalidate(f'unknown opcode: {self.opcode}')
         
         _, expected_operand_length = self.opcodes[self.opcode]
         if len(self.operand) != expected_operand_length:
-            self._invalidate('incorrect operand length')
+            self._invalidate(f'incorrect operand length: {self.instruction}')
 
     def _invalidate(self, error_message, exit_code=1):
         self.opcode = 'err'
