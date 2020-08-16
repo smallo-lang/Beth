@@ -56,10 +56,12 @@ class Parser:
         self._shift()
 
     def _add_operand(self):
+        value = self._buf
+
         if self._state == State.INTEGER:
-            self.operand += (int(self._buf),)
-        else:
-            self.operand += (self._buf,)
+            value = int(value)
+
+        self.operand += ((self._state, value),)
         self._shift()
 
     def _start_(self):
@@ -135,8 +137,3 @@ class Parser:
         else:
             self._buf_curs()
             return
-
-
-if __name__ == '__main__':
-    p = Parser('put "I love SmallO"')
-    p.parse()

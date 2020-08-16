@@ -31,29 +31,29 @@ put val var
 
 @ binary integer operations
     @ arithmetic
-add int int var
-sub int int var
-mul int int var
-div int int var
-mod int int var
+add # # var
+sub # # var
+mul # # var
+div # # var
+mod # # var
     @ comparisons
-gth int int var @ greater than
-lth int int var @ less than
-geq int int var @ greater than or equal to
-leq int int var @ less than or equal to
+gth # # var     @ greater than
+lth # # var     @ less than
+geq # # var     @ greater than or equal to
+leq # # var     @ less than or equal to
 
 @ binary general operations
-eq val val var  @ equality check (type-crytical)
-neq val val var @ inequality check (type-crytical)
+eq val val var      @ equality check (type-crytical)
+neq val val var     @ inequality check (type-crytical)
 
 @ I/O operations
-inn var     @ input integer (type-crytical)
-ins var     @ input string (type-crytical)
-out val     @ output value (type-blind)
+ini var             @ input integer (type-crytical)
+ins var             @ input string (type-crytical)
+out val             @ output value (type-blind)
 
 @ string operations
-con val val var @ concatenate 2 values as strings (type-blind)
-sti val var @ string-to-integer conversion (type-blind)
+con val val var     @ concatenate two values as strings (type-blind)
+sti val var         @ string-to-integer conversion (type-blind)
 
 @ boolean operations
 not val var
@@ -68,10 +68,10 @@ jump_location:
 
 @ control flow
 jump *      @ unconditional jump
-jmpt val *  @ jump if val is true
-jmpf val *  @ jump if val is false
+jmpt val *  @ jump if val is true (type-blind)
+jmpf val *  @ jump if val is false (type-blind)
 back        @ return to previous branch point
-err val int @ exit program with error message (type-blind) and exit code int
+err val #   @ exit program with error message (type-blind) and exit code int
 end         @ exit program
 ```
 
@@ -80,12 +80,11 @@ end         @ exit program
 
 | Symbol | Meaning             |
 |:------:|:--------------------|
-| #      | integer literal     |
-| $      | string literal      |
-| var    | variable identifier |
-| int    | integer (# or var)  |
-| val    | value               |
 | *      | label identifier    |
+| #      | integer             |
+| $      | string              |
+| var    | variable identifier |
+| val    | type-blind value    |
 | @      | comment             |
 
 > The `val` represents constant literal (`#` or `$`) or variable identifier
