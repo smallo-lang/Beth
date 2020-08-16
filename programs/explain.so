@@ -1,10 +1,10 @@
-start:
-  put 0 i
-  put "hello world" s
+  put "I'm glad to see you here," msg
 
-  out i
-  out s
+  out "Input your name:"
+  ins name
 
-  jump start
+  out ""
+  out msg
+  out name
 
   end

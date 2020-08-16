@@ -22,6 +22,7 @@ class VM:
         #   'opc': (fn pointer, operand length)
         self.opcodes = {
             'put': (self._put_, 2),
+
             'add': (self._add_, 3),
             'sub': (self._sub_, 3),
             'mul': (self._mul_, 3),
@@ -74,7 +75,10 @@ class VM:
 
     def _invalidate(self, error_message, exit_code=1):
         self.opcode = 'err'
-        self.operand = (error_message, exit_code)
+        self.operand = (
+            (State.STRING, error_message),
+            (State.INTEGER, exit_code)
+        )
 
     def exec(self):
         opcode_method, _ = self.opcodes[self.opcode]
