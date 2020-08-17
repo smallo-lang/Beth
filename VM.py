@@ -41,6 +41,9 @@ class VM:
             'ins': (self._ins_, 1),
             'out': (self._out_, 1),
 
+            'con': (self._con_, 3),
+            'sti': (self._sti_, 2),
+
             'jump': (self._jump_, 1),
             'jmpt': (self._jmpt_, 2),
             'jmpf': (self._jmpf_, 2),
@@ -225,6 +228,20 @@ class VM:
 
     def _out_(self, operand):
         print(self._eval_value(operand[0]))
+
+    """ String operations. """
+    def _con_(self, operand):
+        x, y, var = self._binary_value_unpack(operand)
+        self._store_name(var, f'{x}{y}')
+
+    def _sti_(self, operand):
+        string, var = operand
+        string = self._eval_string(string)
+        var = self._eval_variable(var)
+        try:
+            self._store_name(var, int(string))
+        except ValueError:
+            self._invalidate('invalid literal for integer conversion')
 
     """ Control flow. """
     def _jump_(self, operand):

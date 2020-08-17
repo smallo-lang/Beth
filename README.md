@@ -53,7 +53,7 @@ out val             @ output value (type-blind)
 
 @ string operations
 con val val var     @ concatenate two values as strings (type-blind)
-sti val var         @ string-to-integer conversion (type-blind)
+sti $ var           @ string-to-integer conversion
 
 @ boolean operations
 not val var

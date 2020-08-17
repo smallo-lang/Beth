@@ -196,7 +196,34 @@ class VMTest(TestCase):
     def test_out_(self):
         self.vm.instructions = ['out "hello world"']
         with capture(self.vm.tick) as output:
-            self.assertEquals('hello world\n', output)
+            self.assertEqual('hello world\n', output)
+
+    def test_con_(self):
+        self.vm.instructions = [
+            'put 42 age',
+            'con "hello " "world" msg',
+            'con "I am " age msg',
+            'end'
+        ]
+        self.vm.tick()
+        self.vm.tick()
+        self._assert_name_equals('hello world', 'msg')
+        self.vm.tick()
+        self._assert_name_equals('I am 42', 'msg')
+
+    def test_sti_(self):
+        self.vm.instructions = [
+            'put "42" magic',
+            'sti "5" five',
+            'sti magic magic',
+            'sti "wrong" wrong'
+            'end'
+        ]
+        for i in range(4):
+            self.vm.tick()
+        self._assert_name_equals(5, 'five')
+        self._assert_name_equals(42, 'magic')
+        self._assert_err_flag_set()
 
     def test_jump_(self):
         self.vm.instructions = ['put 0 i', 'add i 1 i', 'jump start']
