@@ -44,6 +44,10 @@ class VM:
             'con': (self._con_, 3),
             'sti': (self._sti_, 2),
 
+            'not': (self._not_, 2),
+            'and': (self._and_, 3),
+            'or': (self._or_, 3),
+
             'jump': (self._jump_, 1),
             'jmpt': (self._jmpt_, 2),
             'jmpf': (self._jmpf_, 2),
@@ -242,6 +246,21 @@ class VM:
             self._store_name(var, int(string))
         except ValueError:
             self._invalidate('invalid literal for integer conversion')
+
+    """ Boolean operations. """
+    def _not_(self, operand):
+        val, var = operand
+        val = self._eval_value(val)
+        var = self._eval_variable(var)
+        self._store_name(var, int(not val))
+
+    def _and_(self, operand):
+        x, y, var = self._binary_value_unpack(operand)
+        self._store_name(var, int(x and y))
+
+    def _or_(self, operand):
+        x, y, var = self._binary_value_unpack(operand)
+        self._store_name(var, int(x or y))
 
     """ Control flow. """
     def _jump_(self, operand):

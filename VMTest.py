@@ -225,6 +225,49 @@ class VMTest(TestCase):
         self._assert_name_equals(42, 'magic')
         self._assert_err_flag_set()
 
+    def test_not_(self):
+        self.vm.instructions = [
+            'put 0 i',
+            'not 0 a',
+            'not 1 b',
+            'not "" c',
+            'not "true" d',
+            'not i e',
+            'end'
+        ]
+        for i in range(6):
+            self.vm.tick()
+        for name in ['a', 'c', 'e']:
+            self._assert_name_true(name)
+        for name in ['b', 'd']:
+            self._assert_name_false(name)
+
+    def test_and_(self):
+        self.vm.instructions = [
+            'put 0 a',
+            'put 1 b',
+            'and 1 1 true',
+            'and a b false',
+            'end'
+        ]
+        for i in range(4):
+            self.vm.tick()
+        self._assert_name_true('true')
+        self._assert_name_false('false')
+
+    def test_or_(self):
+        self.vm.instructions = [
+            'put 0 a',
+            'put 0 b',
+            'or 1 0 true',
+            'or a b false',
+            'end'
+        ]
+        for i in range(4):
+            self.vm.tick()
+        self._assert_name_true('true')
+        self._assert_name_false('false')
+
     def test_jump_(self):
         self.vm.instructions = ['put 0 i', 'add i 1 i', 'jump start']
         self.vm.names = {'start': 1}
@@ -290,3 +333,9 @@ class VMTest(TestCase):
 
     def _assert_name_equals(self, value, name):
         self.assertEqual(value, self.vm.names[name])
+
+    def _assert_name_true(self, name):
+        self._assert_name_equals(1, name)
+
+    def _assert_name_false(self, name):
+        self._assert_name_equals(0, name)
