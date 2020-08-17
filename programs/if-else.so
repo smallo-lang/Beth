@@ -1,3 +1,4 @@
+  out "Input your age:"
   ini age
 
   lth age 18 b  @ check if age < 18
