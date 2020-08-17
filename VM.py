@@ -87,17 +87,15 @@ class VM:
     def _validate(self):
         if self.opcode not in self.opcodes:
             self._invalidate(f'unknown opcode: {self.opcode}')
+            return
         
         _, expected_operand_length = self.opcodes[self.opcode]
         if len(self.operand) != expected_operand_length:
             self._invalidate(f'incorrect operand length: {self.instruction}')
 
     def _invalidate(self, error_message, exit_code=1):
-        self.opcode = 'err'
-        self.operand = (
-            (State.STRING, error_message),
-            (State.INTEGER, exit_code)
-        )
+        self.err = error_message
+        self.exit_code = exit_code
 
     def exec(self):
         opcode_method, _ = self.opcodes[self.opcode]
@@ -225,10 +223,13 @@ class VM:
     """ I/O operations. """
     def _ini_(self, operand):
         var = self._eval_variable(operand[0])
+        string = ''
         try:
-            self._store_name(var, int(input('# ')))
+            string = input('# ')
+            self._store_name(var, int(string))
         except ValueError:
-            self._invalidate('invalid literal for integer conversion')
+            self._invalidate(
+                f'invalid literal "{string}" for integer conversion')
 
     def _ins_(self, operand):
         var = self._eval_variable(operand[0])
@@ -249,7 +250,8 @@ class VM:
         try:
             self._store_name(var, int(string))
         except ValueError:
-            self._invalidate('invalid literal for integer conversion')
+            self._invalidate(
+                f'invalid literal "{string}" for integer conversion')
 
     """ Boolean operations. """
     def _not_(self, operand):

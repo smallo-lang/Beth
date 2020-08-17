@@ -331,9 +331,21 @@ class VMTest(TestCase):
         self.assertFalse(self.vm.err)
         self.assertFalse(self.vm.exit_code)
 
+    """ Destructive tests. """
+    def test_ini_responds_to_invalid_literal(self):
+        self.vm.instructions = ['ini a']
+        with mock.patch('builtins.input', return_value='wrong'):
+            self.vm.tick()
+        self._assert_err_flag_set()
+
+    def test_sti_responds_to_invalid_literal(self):
+        self.vm.instructions = ['sti "wrong" a']
+        self.vm.tick()
+        self._assert_err_flag_set()
+
     """ Utility methods. """
     def _assert_err_flag_set(self):
-        self.assertEqual('err', self.vm.opcode)
+        self.assertTrue(self.vm.err)
 
     def _assert_name_equals(self, value, name):
         self.assertEqual(value, self.vm.names[name])
