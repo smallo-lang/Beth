@@ -63,7 +63,10 @@ class VMTest(TestCase):
         self._assert_name_equals(126, 'other')
 
     def test_div_(self):
-        self.vm.instructions = ['div 126 3 magic', 'div magic 2 other']
+        self.vm.instructions = [
+            'div 126 3 magic',
+            'div magic 2 other',
+        ]
         self.vm.tick()
         self._assert_name_equals(42, 'magic')
         self.vm.tick()
@@ -83,7 +86,6 @@ class VMTest(TestCase):
             'put 42 a',
             'put 42 b',
             'gth a b f',
-            'end'
         ]
         self.vm.tick()
         self._assert_name_equals(0, 'false')
@@ -100,7 +102,6 @@ class VMTest(TestCase):
             'put 42 a',
             'put 42 b',
             'lth a b f',
-            'end'
         ]
         self.vm.tick()
         self._assert_name_equals(1, 'true')
@@ -117,7 +118,6 @@ class VMTest(TestCase):
             'put 42 a',
             'put 42 b',
             'geq a b t',
-            'end'
         ]
         self.vm.tick()
         self._assert_name_equals(0, 'false')
@@ -134,7 +134,6 @@ class VMTest(TestCase):
             'put 42 a',
             'put 42 b',
             'leq a b t',
-            'end'
         ]
         self.vm.tick()
         self._assert_name_equals(1, 'true')
@@ -151,7 +150,6 @@ class VMTest(TestCase):
             'put "hi" a',
             'put "bye" b',
             'eq a b f',
-            'end'
         ]
         self.vm.tick()
         self._assert_name_equals(1, 'true')
@@ -168,7 +166,6 @@ class VMTest(TestCase):
             'put "hi" a',
             'put "bye" b',
             'neq a b t',
-            'end'
         ]
         self.vm.tick()
         self._assert_name_equals(0, 'false')
@@ -203,7 +200,6 @@ class VMTest(TestCase):
             'put 42 age',
             'con "hello " "world" msg',
             'con "I am " age msg',
-            'end'
         ]
         self.vm.tick()
         self.vm.tick()
@@ -217,7 +213,6 @@ class VMTest(TestCase):
             'sti "5" five',
             'sti magic magic',
             'sti "wrong" wrong'
-            'end'
         ]
         for i in range(4):
             self.vm.tick()
@@ -233,7 +228,6 @@ class VMTest(TestCase):
             'not "" c',
             'not "true" d',
             'not i e',
-            'end'
         ]
         for i in range(6):
             self.vm.tick()
@@ -248,7 +242,6 @@ class VMTest(TestCase):
             'put 1 b',
             'and 1 1 true',
             'and a b false',
-            'end'
         ]
         for i in range(4):
             self.vm.tick()
@@ -261,7 +254,6 @@ class VMTest(TestCase):
             'put 0 b',
             'or 1 0 true',
             'or a b false',
-            'end'
         ]
         for i in range(4):
             self.vm.tick()
@@ -269,7 +261,11 @@ class VMTest(TestCase):
         self._assert_name_false('false')
 
     def test_jump_(self):
-        self.vm.instructions = ['put 0 i', 'add i 1 i', 'jump start']
+        self.vm.instructions = [
+            'put 0 i',
+            'add i 1 i',
+            'jump start',
+        ]
         self.vm.names = {'start': 1}
         self.vm.tick()  # i = 0
         for i in range(3):
@@ -285,14 +281,11 @@ class VMTest(TestCase):
             'put 1 i',
             'jmpt i exit',  # jump!
             'put 0 b',      # unreachable
-            'end'
         ]
         self.vm.names = {'exit': 6}
-        for i in range(3):
+        for i in range(5):
             self.vm.tick()
         self._assert_name_equals(42, 'a')
-        for i in range(3):
-            self.vm.tick()
         self.assertTrue('b' not in self.vm.names)
 
     def test_jmpf_(self):
@@ -303,15 +296,26 @@ class VMTest(TestCase):
             'put 0 i',
             'jmpf i exit',  # jump!
             'put 0 b',      # unreachable
-            'end'
         ]
         self.vm.names = {'exit': 6}
-        for i in range(3):
+        for i in range(5):
             self.vm.tick()
         self._assert_name_equals(42, 'a')
-        for i in range(3):
-            self.vm.tick()
         self.assertTrue('b' not in self.vm.names)
+
+    def test_back_(self):
+        self.vm.instructions = [
+            'jump make',
+            'put 1 a',
+            'end',
+            'put "hi" b',
+            'back',
+        ]
+        self.vm.names = {'make': 3}
+        for i in range(4):
+            self.vm.tick()
+        self._assert_name_true('a')
+        self._assert_name_equals("hi", 'b')
 
     def test_err_(self):
         self.vm.instructions = ['err "just an error message" 1']

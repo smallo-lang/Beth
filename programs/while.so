@@ -11,5 +11,3 @@ check:
   jump check    @ jump back to check
 
 exit:
-  end
-

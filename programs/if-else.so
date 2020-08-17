@@ -10,5 +10,3 @@ else:
   out "You're good to go"
 
 exit:
-  end
-

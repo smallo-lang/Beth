@@ -11,7 +11,7 @@ class VM:
         self.opcode = ''
         self.operand = ()
 
-        self.instructions = instructions
+        self.instructions = instructions + ['end']
         self.names = labels
         self.call = Stack()
 
@@ -51,6 +51,7 @@ class VM:
             'jump': (self._jump_, 1),
             'jmpt': (self._jmpt_, 2),
             'jmpf': (self._jmpf_, 2),
+            'back': (self._back_, 0),
             'err': (self._err_, 2),
             'end': (self._end_, 0),
         }
@@ -162,6 +163,9 @@ class VM:
     def _store_name(self, name, value):
         self.names[name] = value
 
+    def _push_call(self):
+        self.call.push(self.ip)
+
     """ Instruction set methods follow. """
 
     """ Assignment. """
@@ -264,6 +268,7 @@ class VM:
 
     """ Control flow. """
     def _jump_(self, operand):
+        self._push_call()
         location = self._eval_name(operand[0])
         self.ip = location
 
@@ -272,6 +277,7 @@ class VM:
         var = self._eval_name(var)
         location = self._eval_name(location)
         if var:
+            self._push_call()
             self.ip = location
 
     def _jmpf_(self, operand):
@@ -279,7 +285,11 @@ class VM:
         var = self._eval_name(var)
         location = self._eval_name(location)
         if not var:
+            self._push_call()
             self.ip = location
+
+    def _back_(self, operand):
+        self.ip = self.call.pop()
 
     def _err_(self, operand):
         err, exit_code = operand

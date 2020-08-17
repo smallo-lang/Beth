@@ -6,6 +6,3 @@
   out ""
   con msg name final
   out final
-
-  end
-
