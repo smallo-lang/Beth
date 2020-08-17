@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 from Stack import Stack
 
@@ -33,7 +34,10 @@ class Loader:
             if not clean_line:
                 continue
             elif self._is_include(clean_line):
-                self.include(self._include_path(clean_line))
+                if self._is_valid_include(clean_line):
+                    self.include(self._include_path(clean_line))
+                else:
+                    self.err = f'invalid include {clean_line} in {path}'
             else:
                 self.code.append(clean_line)
 
@@ -51,6 +55,10 @@ class Loader:
     @staticmethod
     def _is_include(line):
         return line[0] == '>'
+
+    @staticmethod
+    def _is_valid_include(line):
+        return bool(re.search('>".+"', line))
 
     def _include_path(self, line):
         path = Path(line[2:-1])

@@ -77,10 +77,21 @@ class LoaderTest(TestCase):
         os.remove('one.so')
         os.remove('two.so')
 
+    """ Destructive tests. """
     def test_sets_err_flag_on_nonexistent_include(self):
         self._write_to_test_file('>"non-existent.so"')
         self.loader.load()
-        self.assertTrue(self.loader.err)
+        self._assert_err_flag_set()
+
+    def test_catches_empty_include_statements(self):
+        self._write_to_test_file('>')
+        self.loader.load()
+        self._assert_err_flag_set()
+
+    def test_catches_include_statements_with_empty_path(self):
+        self._write_to_test_file('>""')
+        self.loader.load()
+        self._assert_err_flag_set()
 
     """ Utility methods. """
     @staticmethod
@@ -93,3 +104,6 @@ class LoaderTest(TestCase):
 
     def _assert_code_equals(self, expect):
         self.assertEqual(expect, self.loader.code)
+
+    def _assert_err_flag_set(self):
+        self.assertTrue(self.loader.err)

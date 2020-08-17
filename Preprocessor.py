@@ -1,3 +1,6 @@
+import re
+
+
 class Preprocessor:
     def __init__(self):
         self.instructions = []
@@ -18,8 +21,11 @@ class Preprocessor:
 
     def _check_and_add_label(self, line):
         label_id = self._parse_label_identifier(line)
-        if label_id in self.labels:
-            self.err = 'duplicate labels detected'
+
+        if not self._is_valid_label(line):
+            self.err = f'label {line} is invalid'
+        elif label_id in self.labels:
+            self.err = f'duplicate labels detected: {line}'
         else:
             self.labels[label_id] = len(self.instructions)
 
@@ -30,6 +36,10 @@ class Preprocessor:
     @staticmethod
     def _is_label(line):
         return line[-1] == ':'
+
+    @staticmethod
+    def _is_valid_label(line):
+        return bool(re.search('[_a-zA-Z][_a-zA-Z0-9]*', line))
 
     @staticmethod
     def _parse_label_identifier(line):
