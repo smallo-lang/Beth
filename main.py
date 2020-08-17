@@ -1,7 +1,7 @@
 import sys
 
 import util
-import Loader
+from Loader import Loader
 from Preprocessor import Preprocessor
 from VM import VM
 
@@ -10,9 +10,11 @@ if __name__ == '__main__':
         util.err('source file not specified')
 
     src = sys.argv[1]
-    code = Loader.load(src)
+    ldr = Loader(src)
+    ldr.load()
+
     pre = Preprocessor()
-    pre.process(code)
+    pre.process(ldr.code)
 
     if pre.err:
         util.err(f'preprocessing error: {pre.err}')
