@@ -4,9 +4,6 @@ class Loader:
         self.code = []
 
     def load(self):
-        return self._clean_lines()
-
-    def _clean_lines(self):
         for line in self._read_lines():
             clean_line = self._clean_line(line)
             if clean_line:
