@@ -1,18 +1,58 @@
+from pathlib import Path
+
+from Stack import Stack
+
+
 class Loader:
     def __init__(self, src):
-        self.src = src
+        self.src = Path(src).absolute()
+        self.current = Stack()
         self.code = []
+        self.err = ''
 
     def load(self):
-        for line in self._read_lines():
+        self.include(self.src)
+
+    def include(self, path):
+        self.current.push(path)
+
+        if not path.exists():
+            self.err = f'path {path} does not exist'
+            return
+
+        if not path.is_file():
+            self.err = f'path {path} is not a file'
+            return
+
+        for line in self._read_lines(path):
+            if self.err:
+                return
+
             clean_line = self._clean_line(line)
-            if clean_line:
+
+            if not clean_line:
+                continue
+            elif self._is_include(clean_line):
+                self.include(self._include_path(clean_line))
+            else:
                 self.code.append(clean_line)
 
-    def _read_lines(self):
-        with open(self.src) as file:
+        self.current.pop()
+
+    @ staticmethod
+    def _read_lines(src):
+        with open(src) as file:
             return file.readlines()
 
     @staticmethod
     def _clean_line(line):
         return line.split('@')[0].strip()
+
+    @staticmethod
+    def _is_include(line):
+        return line[0] == '>'
+
+    def _include_path(self, line):
+        path = Path(line[2:-1])
+        current = self.current.peek()
+        return path if path.is_absolute() else current.parent / path

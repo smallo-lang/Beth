@@ -1,7 +1,10 @@
   jump main
 
->"func.so"
+>"math.so"
 
 main:
   out "starting main"
   jump adder
+  out ""
+  jump suber
+  out "finishing main"

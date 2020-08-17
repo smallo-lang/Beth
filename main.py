@@ -9,14 +9,21 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         util.err('source file not specified')
 
-    src = sys.argv[1]
-    ldr = Loader(src)
-    ldr.load()
+    try:
+        src = sys.argv[1]
+        ldr = Loader(src)
+        ldr.load()
 
-    pre = Preprocessor()
-    pre.process(ldr.code)
+        if ldr.err:
+            util.err(f'[loader] {ldr.err}')
 
-    if pre.err:
-        util.err(f'preprocessing error: {pre.err}')
+        pre = Preprocessor()
+        pre.process(ldr.code)
 
-    VM(pre.instructions, pre.labels).boot()
+        if pre.err:
+            util.err(f'[preprocessor] {pre.err}')
+
+        VM(pre.instructions, pre.labels).boot()
+        
+    except KeyboardInterrupt:
+        util.keyboard_interrupt()

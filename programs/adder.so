@@ -1,0 +1,7 @@
+adder:
+  out "Input two numbers and you will see their sum displayed"
+  ini a
+  ini b
+  add a b c
+  out c
+  back
