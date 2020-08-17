@@ -1,9 +1,11 @@
-  inn age
+  out "Input your age:"
+  ini age
 
-  lth age 18 b  @ check if age < 18
-  jmpf b exit   @ if it isn't, exit
+  lth age 18 b  @ if age < 18:
+  jmpf b exit   @     exit()
 
   out "You're a minor"
 
 exit:
   end
+

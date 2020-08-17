@@ -1,14 +1,15 @@
-  put 0 i       @ variable creation
+  put 1 i       @ variable creation
 
 check:
-  lth i 5 b     @ comparison
+  leq i 5 b     @ comparison
   jmpf b exit   @ break if it fails
 
   @ while loop body
-  out i
+  con i " time(s)" msg
+  out msg
   add i 1 i     @ step
   jump check    @ jump back to check
 
 exit:
-  out "end of program"
   end
+

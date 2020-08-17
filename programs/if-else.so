@@ -1,11 +1,14 @@
-  inn age
+  ini age
 
   lth age 18 b  @ check if age < 18
   jmpf b else   @ if it isn't, branch into else
 
   out "You're a minor"
+  jump exit
 
 else:
   out "You're good to go"
 
+exit:
   end
+

@@ -3,8 +3,9 @@
   end
 
 adder:
-  inn a
-  inn b
+  ini a
+  ini b
   add a b c
   out c
   back
+
