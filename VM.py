@@ -51,7 +51,12 @@ class VM:
             'jump': (self._jump_, 1),
             'jmpt': (self._jmpt_, 2),
             'jmpf': (self._jmpf_, 2),
+
+            'br': (self._br_, 1),
+            'brt': (self._brt_, 2),
+            'brf': (self._brf_, 2),
             'back': (self._back_, 0),
+
             'err': (self._err_, 2),
             'end': (self._end_, 0),
         }
@@ -270,7 +275,6 @@ class VM:
 
     """ Control flow. """
     def _jump_(self, operand):
-        self._push_call()
         location = self._eval_name(operand[0])
         self.ip = location
 
@@ -279,10 +283,29 @@ class VM:
         var = self._eval_name(var)
         location = self._eval_name(location)
         if var:
-            self._push_call()
             self.ip = location
 
     def _jmpf_(self, operand):
+        var, location = operand
+        var = self._eval_name(var)
+        location = self._eval_name(location)
+        if not var:
+            self.ip = location
+
+    def _br_(self, operand):
+        self._push_call()
+        location = self._eval_name(operand[0])
+        self.ip = location
+
+    def _brt_(self, operand):
+        var, location = operand
+        var = self._eval_name(var)
+        location = self._eval_name(location)
+        if var:
+            self._push_call()
+            self.ip = location
+
+    def _brf_(self, operand):
         var, location = operand
         var = self._eval_name(var)
         location = self._eval_name(location)
@@ -291,7 +314,13 @@ class VM:
             self.ip = location
 
     def _back_(self, operand):
-        self.ip = self.call.pop()
+        if self.call.empty():
+            self._invalidate(
+                'attempt to branch back with empty call stack at ' +
+                f'instruction {self.ip}'
+            )
+        else:
+            self.ip = self.call.pop()
 
     def _err_(self, operand):
         err, exit_code = operand

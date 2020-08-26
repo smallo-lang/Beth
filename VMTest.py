@@ -262,16 +262,15 @@ class VMTest(TestCase):
 
     def test_jump_(self):
         self.vm.instructions = [
-            'put 0 i',
-            'add i 1 i',
-            'jump start',
+            'put 0 a',
+            'jump point',
+            'put 1 a',
+            'end',
         ]
-        self.vm.names = {'start': 1}
-        self.vm.tick()  # i = 0
+        self.vm.names = {'point': 3}
         for i in range(3):
-            self._assert_name_equals(i, 'i')
-            self.vm.tick()  # i += 1
-            self.vm.tick()  # jump start
+            self.vm.tick()
+        self._assert_name_equals(0, 'a')
 
     def test_jmpt_(self):
         self.vm.instructions = [
@@ -303,9 +302,55 @@ class VMTest(TestCase):
         self._assert_name_equals(42, 'a')
         self.assertTrue('b' not in self.vm.names)
 
+    def test_br_(self):
+        self.vm.instructions = [
+            'put 0 i',
+            'add i 1 i',
+            'br start',
+        ]
+        self.vm.names = {'start': 1}
+        self.vm.tick()      # i = 0
+        for i in range(3):
+            self._assert_name_equals(i, 'i')
+            self.vm.tick()  # i += 1
+            self.vm.tick()  # jump start
+        self.assertEqual(3, self.vm.call.peek())
+
+    def test_brt_(self):
+        self.vm.instructions = [
+            'put 0 i',
+            'brt i exit',   # no jump!
+            'put 42 a',     # should be set to 42
+            'put 1 i',
+            'brt i exit',   # jump!
+            'put 0 b',      # unreachable
+        ]
+        self.vm.names = {'exit': 6}
+        for i in range(5):
+            self.vm.tick()
+        self._assert_name_equals(42, 'a')
+        self.assertTrue('b' not in self.vm.names)
+        self.assertEqual(5, self.vm.call.peek())
+
+    def test_brf_(self):
+        self.vm.instructions = [
+            'put 1 i',
+            'brf i exit',   # no jump!
+            'put 42 a',     # should be set to 42
+            'put 0 i',
+            'brf i exit',   # jump!
+            'put 0 b',      # unreachable
+        ]
+        self.vm.names = {'exit': 6}
+        for i in range(5):
+            self.vm.tick()
+        self._assert_name_equals(42, 'a')
+        self.assertTrue('b' not in self.vm.names)
+        self.assertEqual(5, self.vm.call.peek())
+
     def test_back_(self):
         self.vm.instructions = [
-            'jump make',
+            'br make',
             'put 1 a',
             'end',
             'put "hi" b',
