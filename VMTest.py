@@ -193,7 +193,17 @@ class VMTest(TestCase):
     def test_out_(self):
         self.vm.instructions = ['out "hello world"']
         with capture(self.vm.tick) as output:
+            self.assertEqual('hello world', output)
+
+    def test_outl_(self):
+        self.vm.instructions = ['outl "hello world"']
+        with capture(self.vm.tick) as output:
             self.assertEqual('hello world\n', output)
+
+    def test_nl_(self):
+        self.vm.instructions = ['nl']
+        with capture(self.vm.tick) as output:
+            self.assertEqual('\n', output)
 
     def test_con_(self):
         self.vm.instructions = [

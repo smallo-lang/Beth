@@ -6,7 +6,7 @@ check:
 
   @ while loop body
   con i " time(s)" msg
-  out msg
+  outl msg
   add i 1 i     @ step
   jump check    @ jump back to check
 

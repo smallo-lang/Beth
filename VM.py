@@ -40,6 +40,8 @@ class VM:
             'ini': (self._ini_, 1),
             'ins': (self._ins_, 1),
             'out': (self._out_, 1),
+            'outl': (self._outl_, 1),
+            'nl': (self._nl_, 0),
 
             'con': (self._con_, 3),
             'sti': (self._sti_, 2),
@@ -230,7 +232,7 @@ class VM:
         var = self._eval_variable(operand[0])
         string = ''
         try:
-            string = input('# ')
+            string = input()
             self._store_name(var, int(string))
         except ValueError:
             self._invalidate(
@@ -238,10 +240,16 @@ class VM:
 
     def _ins_(self, operand):
         var = self._eval_variable(operand[0])
-        self._store_name(var, input('$ '))
+        self._store_name(var, input())
 
     def _out_(self, operand):
+        print(self._eval_value(operand[0]), end='')
+
+    def _outl_(self, operand):
         print(self._eval_value(operand[0]))
+
+    def _nl_(self, operand):
+        print()
 
     """ String operations. """
     def _con_(self, operand):
