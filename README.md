@@ -1,6 +1,8 @@
-# SmallO Interpreter
+# Beth
 
-Simple syntax. Infinite opportunities.
+Beth is an assembler + VM bundle for SmallO assembly. She can run your SmallO
+assembly code with no extra steps and dependencies. The only thing you need is
+Python3.
 
 
 
