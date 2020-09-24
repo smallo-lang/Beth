@@ -4,7 +4,7 @@ pyinstaller main.py --onefile
 
 if [ -d dist ]; then
 	# move to root folder
-	sudo mv ./dist/main ./smallo
+	sudo mv ./dist/main ./beth
 
 	# cleanup
 	rm -r dist build __pycache__

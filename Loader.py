@@ -5,16 +5,20 @@ from Stack import Stack
 
 
 class Loader:
-    def __init__(self, src):
-        self.src = Path(src).absolute()
+    def __init__(self):
         self.current = Stack()
         self.code = []
         self.err = ''
+        self.included = set()
 
-    def load(self):
-        self.include(self.src)
+    def load(self, src):
+        self.include(Path(src).absolute())
 
     def include(self, path):
+        if path in self.included:
+            return
+
+        self.included.add(path)
         self.current.push(path)
 
         if not path.exists():

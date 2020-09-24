@@ -1,2 +1,2 @@
 # requires sudo privileges
-mv ./smallo /usr/local/bin/
+mv ./beth /usr/local/bin/

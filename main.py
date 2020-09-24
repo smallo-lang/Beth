@@ -11,8 +11,8 @@ if __name__ == '__main__':
 
     try:
         src = sys.argv[1]
-        ldr = Loader(src)
-        ldr.load()
+        ldr = Loader()
+        ldr.load(src)
 
         if ldr.err:
             util.err(f'[loader] {ldr.err}')

@@ -1,7 +1,0 @@
-suber:
-  out "Input two numbers and you will see their difference displayed"
-  ini a
-  ini b
-  sub a b c
-  out c
-  back
