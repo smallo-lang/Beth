@@ -42,6 +42,9 @@ class Parser:
         self._curs = self.instruction[self._index]
         self.STATES[self._state]()
 
+    def err(self):
+        return self._state == State.ERROR
+
     def _shift(self):
         self._index += 1
 

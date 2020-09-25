@@ -91,11 +91,18 @@ class VM:
 
     def decode(self):
         self._parse()
+        if self.err:
+            return
         self._validate()
 
     def _parse(self):
         parser = Parser()
         parser.parse(self.instruction)
+
+        if parser.err():
+            self._error(f'failed to parse instruction: {parser.instruction}')
+            return
+
         self.opcode = parser.opcode
         self.operand = parser.operand
 
@@ -291,40 +298,72 @@ class VM:
 
     """ Control flow. """
     def _jump_(self, operand):
-        location = self._eval_name(operand[0])
+        label = operand[0]
+        location = self._eval_name(label)
+
+        if location is None:
+            self._error(f'unknown label: {label[1]}')
+            return
+
         self.ip = location
 
     def _jmpt_(self, operand):
-        var, location = operand
+        var, label = operand
         var = self._eval_name(var)
-        location = self._eval_name(location)
+        location = self._eval_name(label)
+
+        if location is None:
+            self._error(f'unknown label: {label[1]}')
+            return
+
         if var:
             self.ip = location
 
     def _jmpf_(self, operand):
-        var, location = operand
+        var, label = operand
         var = self._eval_name(var)
-        location = self._eval_name(location)
+        location = self._eval_name(label)
+
+        if location is None:
+            self._error(f'unknown label: {label[1]}')
+            return
+
         if not var:
             self.ip = location
 
     def _br_(self, operand):
         self._push_call()
-        location = self._eval_name(operand[0])
+        label = operand[0]
+        location = self._eval_name(label)
+
+        if location is None:
+            self._error(f'unknown label: {label[1]}')
+            return
+
         self.ip = location
 
     def _brt_(self, operand):
-        var, location = operand
+        var, label = operand
         var = self._eval_name(var)
-        location = self._eval_name(location)
+        location = self._eval_name(label)
+
+        if location is None:
+            self._error(f'unknown label: {label[1]}')
+            return
+
         if var:
             self._push_call()
             self.ip = location
 
     def _brf_(self, operand):
-        var, location = operand
+        var, label = operand
         var = self._eval_name(var)
-        location = self._eval_name(location)
+        location = self._eval_name(label)
+
+        if location is None:
+            self._error(f'unknown label: {label[1]}')
+            return
+
         if not var:
             self._push_call()
             self.ip = location

@@ -409,6 +409,11 @@ class VMTest(TestCase):
         self.vm.tick()
         self._assert_err_flag_set()
 
+    def test_jump_catches_unknown_label(self):
+        self.vm.instructions = ['jump unknown']
+        self.vm.tick()
+        self._assert_err_flag_set()
+
     """ Utility methods. """
     def _assert_err_flag_set(self):
         self.assertTrue(self.vm.err)
