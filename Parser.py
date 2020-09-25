@@ -13,9 +13,9 @@ class State:
 
 
 class Parser:
-    def __init__(self, instruction):
+    def __init__(self):
         self.ender = ';'
-        self.instruction = instruction + self.ender
+        self.instruction = ''
         self.opcode = ''
         self.operand = ()
 
@@ -33,7 +33,8 @@ class Parser:
             State.STRING: self._string_,
         }
 
-    def parse(self):
+    def parse(self, instruction):
+        self.instruction = instruction + self.ender
         while self._state not in (State.ERROR, State.FINISH):
             self.next()
 

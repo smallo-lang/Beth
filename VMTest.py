@@ -21,18 +21,6 @@ class VMTest(TestCase):
     def setUp(self) -> None:
         self.vm = VM()
 
-    def test_decode_sets_err_flag_on_unknown_instruction(self):
-        self.vm.instructions = ['unknown 1 a']
-        self.vm.fetch()
-        self.vm.decode()
-        self._assert_err_flag_set()
-
-    def test_decode_sets_err_flag_on_invalid_operand_length(self):
-        self.vm.instructions = ['put 1']
-        self.vm.fetch()
-        self.vm.decode()
-        self._assert_err_flag_set()
-
     """ Instruction set methods tests follow. """
     def test_put_(self):
         self.vm.instructions = ['put 1 a', 'put a b']
@@ -387,6 +375,29 @@ class VMTest(TestCase):
         self.assertFalse(self.vm.exit_code)
 
     """ Destructive tests. """
+    def test_fetch_sets_err_flag_on_invalid_ip(self):
+        self.vm.instructions = ['put 50 mp', 'jump mp', 'end']
+        for i in range(3):
+            self.vm.tick()
+        self._assert_err_flag_set()
+
+    def test_decode_sets_err_flag_on_unknown_instruction(self):
+        self.vm.instructions = ['unknown 1 a']
+        self.vm.fetch()
+        self.vm.decode()
+        self._assert_err_flag_set()
+
+    def test_decode_sets_err_flag_on_invalid_operand_length(self):
+        self.vm.instructions = ['put 1']
+        self.vm.fetch()
+        self.vm.decode()
+        self._assert_err_flag_set()
+
+    def test_ticks_without_exception_on_invalid_operand_length(self):
+        self.vm.instructions = ['put 1']
+        self.vm.tick()
+        self._assert_err_flag_set()
+
     def test_ini_responds_to_invalid_literal(self):
         self.vm.instructions = ['ini a']
         with mock.patch('builtins.input', return_value='wrong'):

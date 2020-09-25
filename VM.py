@@ -74,10 +74,18 @@ class VM:
 
     def tick(self):
         self.fetch()
+        if self.err:
+            return
         self.decode()
+        if self.err:
+            return
         self.exec()
 
     def fetch(self):
+        if self.ip < 0 or self.ip >= len(self.instructions):
+            self._error(f'instruction pointer out of bounds: {self.ip}')
+            return
+
         self.instruction = self.instructions[self.ip]
         self.ip += 1
 
@@ -86,21 +94,21 @@ class VM:
         self._validate()
 
     def _parse(self):
-        parser = Parser(self.instruction)
-        parser.parse()
+        parser = Parser()
+        parser.parse(self.instruction)
         self.opcode = parser.opcode
         self.operand = parser.operand
 
     def _validate(self):
         if self.opcode not in self.opcodes:
-            self._invalidate(f'unknown opcode: {self.opcode}')
+            self._error(f'unknown opcode: {self.opcode}')
             return
         
         _, expected_operand_length = self.opcodes[self.opcode]
         if len(self.operand) != expected_operand_length:
-            self._invalidate(f'incorrect operand length: {self.instruction}')
+            self._error(f'incorrect operand length: {self.instruction}')
 
-    def _invalidate(self, error_message, exit_code=1):
+    def _error(self, error_message, exit_code=1):
         self.err = error_message
         self.exit_code = exit_code
 
@@ -235,7 +243,7 @@ class VM:
             string = input()
             self._store_name(var, int(string))
         except ValueError:
-            self._invalidate(
+            self._error(
                 f'invalid literal "{string}" for integer conversion')
 
     def _ins_(self, operand):
@@ -263,7 +271,7 @@ class VM:
         try:
             self._store_name(var, int(string))
         except ValueError:
-            self._invalidate(
+            self._error(
                 f'invalid literal "{string}" for integer conversion')
 
     """ Boolean operations. """
@@ -323,7 +331,7 @@ class VM:
 
     def _back_(self, operand):
         if self.call.empty():
-            self._invalidate(
+            self._error(
                 'attempt to branch back with empty call stack at ' +
                 f'instruction {self.ip}'
             )

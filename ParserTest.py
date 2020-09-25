@@ -36,7 +36,7 @@ class ParserTest(TestCase):
         )
 
     def _parse_and_check_result(self, instruction, opcode, operand):
-        self.parser = Parser(instruction)
-        self.parser.parse()
+        self.parser = Parser()
+        self.parser.parse(instruction)
         self.assertEqual(opcode, self.parser.opcode)
         self.assertEqual(operand, self.parser.operand)
