@@ -1,0 +1,9 @@
+  put "Input your age: " a
+  put 2020 b
+  put "You were born in " c
+
+  out a
+  ini d
+  sub b d e
+  out c
+  outl e
