@@ -99,7 +99,7 @@ class Parser:
         elif self._curs.isidentifier():
             self._buf_curs()
             self._state = State.IDENTIFIER
-        elif self._curs.isdecimal():
+        elif self._curs == '-' or self._curs.isdecimal():
             self._buf_curs()
             self._state = State.INTEGER
         elif self._curs == '"':

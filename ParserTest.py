@@ -19,6 +19,12 @@ class ParserTest(TestCase):
             'put', ((State.INTEGER, 1),)
         )
 
+    def test_can_parse_instruction_with_negative_int(self):
+        self._parse_and_check_result(
+            'put -2020 year',
+            'put', ((State.INTEGER, -2020), (State.IDENTIFIER, 'year'))
+        )
+
     def test_can_parse_instruction_with_one_str_operand(self):
         self._parse_and_check_result(
             'put "I love SmallO"',
