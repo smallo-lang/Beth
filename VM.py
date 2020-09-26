@@ -128,11 +128,8 @@ class VM:
 
         if kind != State.IDENTIFIER:
             return None
-
-        try:
-            return self.names[name]
-        except KeyError:
-            return None
+        else:
+            return self.names.get(name)
 
     def _eval_integer(self, tok):
         kind, integer = tok
