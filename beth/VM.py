@@ -1,7 +1,7 @@
 import sys
 
-from Stack import Stack
-from Parser import Parser, State
+from .Stack import Stack
+from .Parser import Parser, State
 
 
 class VM:

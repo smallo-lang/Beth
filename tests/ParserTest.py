@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from Parser import Parser, State
+from beth.Parser import Parser, State
 
 
 class ParserTest(TestCase):
@@ -25,10 +25,28 @@ class ParserTest(TestCase):
             'put', ((State.INTEGER, -2020), (State.IDENTIFIER, 'year'))
         )
 
+    def test_can_parse_instruction_with_empty_str(self):
+        self._parse_and_check_result(
+            'put ""',
+            'put', ((State.STRING, ''),)
+        )
+
     def test_can_parse_instruction_with_one_str_operand(self):
         self._parse_and_check_result(
             'put "I love SmallO"',
             'put', ((State.STRING, 'I love SmallO'),)
+        )
+
+    def test_can_parse_instruction_with_newline_in_str(self):
+        self._parse_and_check_result(
+            r'put "I love SmallO\n"',
+            'put', ((State.STRING, 'I love SmallO\n'),)
+        )
+
+    def test_can_parse_instruction_with_quote_in_str(self):
+        self._parse_and_check_result(
+            r'put "He said: \"I love SmallO\""',
+            'put', ((State.STRING, 'He said: "I love SmallO"'),)
         )
 
     def test_can_parse_complex_instruction(self):

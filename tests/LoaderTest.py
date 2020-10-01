@@ -1,7 +1,7 @@
 from unittest import TestCase
 import os
 
-from Loader import Loader
+from beth.Loader import Loader
 
 
 class LoaderTest(TestCase):
@@ -25,7 +25,7 @@ class LoaderTest(TestCase):
     def test_can_include_files(self):
         self._write_to_test_file(
             """
-            >"examples/lib/factorial.so"
+            >"../examples/lib/factorial.so"
               jump adder
             """
         )
@@ -49,8 +49,8 @@ class LoaderTest(TestCase):
     def test_includes_multiple_files(self):
         self._write_to_test_file(
             """
-            >"examples/lib/factorial.so"
-            >"examples/theory/infinite.so"
+            >"../examples/lib/factorial.so"
+            >"../examples/theory/infinite.so"
               jump adder
             """
         )

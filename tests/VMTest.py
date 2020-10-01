@@ -3,7 +3,7 @@ import sys
 from io import StringIO
 from contextlib import contextmanager
 
-from VM import VM
+from beth.VM import VM
 
 
 @contextmanager

@@ -11,6 +11,31 @@ class State:
     INTEGER = 6
     STRING = 7
 
+    """ Additional semantic states for the Preprocessor. """
+    VALUE = 8   # IDENTIFIER / INTEGER / STRING
+    NOT_INTEGER = 9
+    NOT_STRING = 10
+
+    """ States translated back as strings. """
+    NAME = ['finish', 'error', 'start', 'opcode', 'dump',
+            'identifier', 'integer', 'string', 'value',
+            'not integer', 'not string']
+
+    @staticmethod
+    def name(state):
+        return State.NAME[state]
+
+    @staticmethod
+    def mismatch(got, expected):
+        if expected == State.VALUE:
+            return False
+        elif expected == State.NOT_INTEGER:
+            return got == State.INTEGER
+        elif expected == State.NOT_STRING:
+            return got == State.STRING
+        else:
+            return got != expected
+
 
 class Parser:
     def __init__(self):
@@ -31,6 +56,13 @@ class Parser:
             State.IDENTIFIER: self._identifier_,
             State.INTEGER: self._integer_,
             State.STRING: self._string_,
+        }
+
+        self.ESCAPE_SEQUENCES = {
+            r'\n': '\n',
+            r'\t': '\t',
+            r'\r': '\r',
+            r'\"': '"',
         }
 
     def parse(self, instruction):
@@ -64,6 +96,9 @@ class Parser:
 
         if self._state == State.INTEGER:
             value = int(value)
+        elif self._state == State.STRING:
+            for esc, seq in self.ESCAPE_SEQUENCES.items():
+                value = value.replace(esc, seq)
 
         self.operand += ((self._state, value),)
         self._shift()
@@ -135,7 +170,7 @@ class Parser:
             self._state = State.ERROR
 
     def _string_(self):
-        if self._curs == '"':
+        if self._curs == '"' and (len(self._buf) == 0 or self._buf[-1] != '\\'):
             self._add_operand()
             self._state = State.DUMP
         else:

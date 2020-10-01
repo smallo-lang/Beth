@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from Preprocessor import Preprocessor
+from beth.Preprocessor import Preprocessor
 
 
 class PreprocessorTest(TestCase):
